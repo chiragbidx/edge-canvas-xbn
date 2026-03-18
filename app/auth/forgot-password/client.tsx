@@ -1,104 +1,61 @@
 "use client";
-
-// Purpose: Client UI for /auth/forgot-password.
-// Collects email, submits to forgotPasswordAction, shows confirmation.
-
-import Link from "next/link";
-import { useActionState, useEffect } from "react";
-
-import type { AuthActionState } from "@/app/auth/actions";
-import { forgotPasswordAction } from "@/app/auth/forgot-password/actions";
-import { Button } from "@/components/ui/button";
-import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardHeader,
-  CardTitle,
-} from "@/components/ui/card";
+import * as React from "react";
+import { useState } from "react";
+import { sendResetEmail } from "./actions";
 import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
+import { Button } from "@/components/ui/button";
 
-const initialState: AuthActionState = { status: "idle", message: "" };
+export default function ForgotPasswordClient() {
+  const [email, setEmail] = useState("");
+  const [sent, setSent] = useState(false);
+  const [error, setError] = useState<string | null>(null);
+  const [loading, setLoading] = useState(false);
 
-export default function Client() {
-  const [state, action, pending] = useActionState(
-    forgotPasswordAction,
-    initialState
-  );
-
-  useEffect(() => {
-    if (state._devUrl) {
-      console.log(`[Dev] Reset link → ${state._devUrl}`);
+  const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
+    event.preventDefault();
+    setLoading(true);
+    setError(null);
+    try {
+      await sendResetEmail(new FormData(event.currentTarget));
+      setSent(true);
+    } catch (err: any) {
+      setError("Something went wrong. Please try again.");
+    } finally {
+      setLoading(false);
     }
-  }, [state._devUrl]);
+  };
 
   return (
-    <main className="min-h-screen bg-[radial-gradient(circle_at_top,_hsl(var(--primary)/0.18),_transparent_45%),linear-gradient(to_bottom,_hsl(var(--background)),_hsl(var(--muted)/0.45))] px-6 py-10 sm:px-10 lg:px-16 lg:py-14">
-      <section className="mx-auto flex min-h-[720px] w-full max-w-md items-center justify-center">
-        <Card className="w-full border-secondary/70 shadow-xl">
-          <CardHeader className="space-y-1">
-            <CardTitle>Forgot password</CardTitle>
-            <CardDescription>
-              Enter your email and we&apos;ll send you a link to reset your
-              password.
-            </CardDescription>
-          </CardHeader>
-
-          <CardContent className="space-y-6">
-            {state.status === "success" ? (
-              <div className="space-y-4">
-                <p className="text-sm text-emerald-700 dark:text-emerald-400">
-                  {state.message}
-                </p>
-                <Link
-                  href="/auth#signin"
-                  className="text-sm font-medium text-primary hover:underline"
-                >
-                  Back to sign in
-                </Link>
-              </div>
-            ) : (
-              <>
-                <form className="space-y-4" action={action}>
-                  <div className="space-y-2">
-                    <Label htmlFor="forgot-email">Email</Label>
-                    <Input
-                      id="forgot-email"
-                      name="email"
-                      type="email"
-                      placeholder="you@company.com"
-                      required
-                    />
-                  </div>
-
-                  <Button type="submit" className="w-full" disabled={pending}>
-                    {pending ? "Sending..." : "Send reset link"}
-                  </Button>
-                </form>
-
-                {state.status === "error" && state.message ? (
-                  <p
-                    className="text-sm font-medium text-destructive"
-                    role="alert"
-                  >
-                    {state.message}
-                  </p>
-                ) : null}
-
-                <div className="text-center">
-                  <Link
-                    href="/auth#signin"
-                    className="text-sm text-muted-foreground hover:text-foreground"
-                  >
-                    Back to sign in
-                  </Link>
-                </div>
-              </>
-            )}
-          </CardContent>
-        </Card>
-      </section>
-    </main>
+    <div className="w-full max-w-md mx-auto bg-background shadow-lg border border-border rounded-lg p-8 my-12">
+      <h1 className="text-2xl md:text-3xl font-bold text-center mb-2">
+        Reset Your LaunchPilot Password
+      </h1>
+      <p className="text-muted-foreground text-center mb-8">
+        We&apos;ll email you instructions to reset your password.
+      </p>
+      {sent ? (
+        <div className="text-green-700 text-center mb-2">
+          If your email is registered, you&apos;ll receive a reset link shortly.
+        </div>
+      ) : (
+        <form className="flex flex-col gap-4" onSubmit={handleSubmit}>
+          <Input
+            name="email"
+            type="email"
+            required
+            placeholder="Your email"
+            value={email}
+            onChange={e => setEmail(e.target.value)}
+          />
+          {error && <div className="text-red-600 text-sm">{error}</div>}
+          <Button type="submit" disabled={loading}>
+            {loading ? "Sending..." : "Send Reset Link"}
+          </Button>
+        </form>
+      )}
+      <div className="mt-8 text-xs text-muted-foreground text-center">
+        Having trouble? Reach out to our support at chirag@bidx.ai.
+      </div>
+    </div>
   );
 }
