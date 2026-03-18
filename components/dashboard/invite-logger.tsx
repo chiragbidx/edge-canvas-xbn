@@ -1,17 +1,19 @@
 "use client";
+import * as React from "react";
 
-import { useEffect } from "react";
-
-export function InviteLogger({ url }: { url: string | null }) {
-  useEffect(() => {
-    if (url) {
+export default function InviteLogger({ inviteUrl }: { inviteUrl: string }) {
+  React.useEffect(() => {
+    if (inviteUrl) {
+      // Updated console log for LaunchPilot
+      // (useful for devs or helpers)
+      // eslint-disable-next-line no-console
       console.log(
-        "%c[Invite Link]%c %s",
-        "color: #22c55e; font-weight: bold",
-        "color: inherit",
-        url
+        `%c[LaunchPilot Invite Link]%c You can share this invitation:\n\n${inviteUrl}\n`,
+        "color: #0070f3; font-weight: bold;",
+        "color:inherit;font-weight:normal;"
       );
     }
-  }, [url]);
+  }, [inviteUrl]);
+
   return null;
 }
