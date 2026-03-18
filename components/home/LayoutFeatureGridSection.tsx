@@ -1,47 +1,26 @@
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Icon } from "@/components/ui/icon";
+import React from "react";
 import { homeContent } from "@/content/home";
 
-const { features } = homeContent;
-
-export const LayoutFeatureGridSection = () => {
+export default function LayoutFeatureGridSection() {
   return (
-    <section id="features" className="container py-24 sm:py-32">
-      <h2 className="text-lg text-primary text-center mb-2 tracking-wider">
-        {features.eyebrow}
+    <section
+      id="layout-features"
+      className="py-16 md:py-20 w-full max-w-5xl mx-auto"
+    >
+      <h2 className="text-3xl font-bold mb-8 text-center">
+        Powerful Features, Simplified
       </h2>
-
-      <h2 className="text-3xl md:text-4xl text-center font-bold mb-4">
-        {features.heading}
-      </h2>
-
-      <h3 className="md:w-1/2 mx-auto text-xl text-center text-muted-foreground mb-8">
-        {features.subtitle}
-      </h3>
-
-      <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-4">
-        {features.items.map(({ icon, title, description }) => (
-          <div key={title}>
-            <Card className="h-full bg-background border-0 shadow-none">
-              <CardHeader className="flex justify-center items-center">
-                <div className="bg-primary/20 p-2 rounded-full ring-8 ring-primary/10 mb-4">
-                  <Icon
-                    name={icon}
-                    size={24}
-                    className="text-primary"
-                  />
-                </div>
-
-                <CardTitle>{title}</CardTitle>
-              </CardHeader>
-
-              <CardContent className="text-muted-foreground text-center">
-                {description}
-              </CardContent>
-            </Card>
+      <div className="grid md:grid-cols-3 gap-8">
+        {homeContent.features.map((feature, idx) => (
+          <div
+            key={idx}
+            className="bg-muted border border-border rounded-xl p-6 flex flex-col gap-3 items-center text-center"
+          >
+            <h3 className="font-semibold text-xl">{feature.title}</h3>
+            <p className="text-muted-foreground">{feature.description}</p>
           </div>
         ))}
       </div>
     </section>
   );
-};
+}
