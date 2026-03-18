@@ -2,7 +2,7 @@
 import { LayoutBenefitsSection } from "../components/home/LayoutBenefitsSection";
 import { LayoutContactSection } from "../components/home/LayoutContactSection";
 import { LayoutFaqSection } from "../components/home/LayoutFaqSection";
-import { LayoutFeatureGridSection } from "../components/home/LayoutFeatureGridSection";
+import LayoutFeatureGridSection from "../components/home/LayoutFeatureGridSection";
 import { LayoutFooterSection } from "../components/home/LayoutFooterSection";
 import { LayoutHeroSection } from "../components/home/LayoutHeroSection";
 import { LayoutPricingSection } from "../components/home/LayoutPricingSection";
